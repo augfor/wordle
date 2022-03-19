@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
@@ -20,8 +20,35 @@ export default function App() {
   );
   const [curRow, setCurRow] = useState(0);
   const [curCol, setCurCol] = useState(0);
+  const [gameState, setGameState] = useState('active');
+
+  useEffect(() => {
+    if (curRow > 0) {
+      checkGameState();
+    }
+  }, [curRow]);
+
+  const checkGameState = () => {
+    if (checkIfCorrect()) {
+      alert('Correct!');
+      setGameState('won');
+    } else if (checkIfWrong()) {
+      alert('Try again...');
+      setGameState('lost');
+    }
+  };
+
+  const checkIfCorrect = () => {
+    const row = rows[curRow - 1];
+
+    return row.every((letter, i) => letter === letters[i]);
+  };
+
+  const checkIfWrong = () => curRow === rows.length;
 
   const onKeyPressed = (key) => {
+    if (gameState !== 'active') return;
+
     const updatedRows = copyArray(rows);
 
     if (key === CLEAR) {
