@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Alert, StyleSheet, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 
-import { CLEAR, colors, ENTER } from './src/constants';
+import { CLEAR, colors, colorsToEmoji, ENTER } from './src/constants';
 import Keyboard from './src/components/Keyboard';
 
 const NUMBER_OF_TRIES = 6;
@@ -29,13 +30,24 @@ export default function App() {
   }, [curRow]);
 
   const checkGameState = () => {
-    if (checkIfCorrect()) {
-      alert('Correct!');
+    if (checkIfCorrect() && gameState !== 'won') {
+      Alert.alert('Hurray!', 'Correct answer', [{ text: 'Share', onPress: shareScore }]);
       setGameState('won');
-    } else if (checkIfWrong()) {
-      alert('Try again...');
+    } else if (checkIfWrong() && gameState !== 'lost') {
+      Alert.alert('Out tries :(', 'Try again tomorrow...');
       setGameState('lost');
     }
+  };
+
+  const shareScore = () => {
+    const shareText = rows
+      .map((row, i) => row.map((cell, j) => colorsToEmoji[getCellBGColor(i, j)]).join(''))
+      .filter((row) => row)
+      .join('\n');
+
+    Clipboard.setString(shareText);
+
+    Alert.alert('Copied successfully', 'Share your score on your social media');
   };
 
   const checkIfCorrect = () => {
@@ -44,7 +56,7 @@ export default function App() {
     return row.every((letter, i) => letter === letters[i]);
   };
 
-  const checkIfWrong = () => curRow === rows.length;
+  const checkIfWrong = () => !checkIfCorrect() && curRow === rows.length;
 
   const onKeyPressed = (key) => {
     if (gameState !== 'active') return;
