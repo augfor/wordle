@@ -8,12 +8,47 @@ import Keyboard from './src/components/Keyboard';
 
 const NUMBER_OF_TRIES = 6;
 
-const copyArray = (arr) => {
-  return [...arr.map((rows) => [...rows])];
-};
+const copyArray = (arr) => [...arr.map((rows) => [...rows])];
+
+const getRandomDayOfTheMonth = () => Math.floor(Math.random() * (31 - 1) + 1);
+
+const randomDayOfTheMonth = getRandomDayOfTheMonth();
+const words = [
+  'hello',
+  'world',
+  'about',
+  'above',
+  'actor',
+  'acute',
+  'admit',
+  'adopt',
+  'adult',
+  'after',
+  'again',
+  'agent',
+  'agree',
+  'ahead',
+  'alarm',
+  'album',
+  'alert',
+  'alike',
+  'alive',
+  'allow',
+  'alone',
+  'along',
+  'alter',
+  'among',
+  'anger',
+  'angle',
+  'angry',
+  'apart',
+  'apple',
+  'apply',
+  'arena',
+];
 
 export default function App() {
-  const word = 'hello';
+  const word = words[randomDayOfTheMonth];
   const letters = word.split('');
 
   const [rows, setRows] = useState(
